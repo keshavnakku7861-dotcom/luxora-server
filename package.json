@@ -1,0 +1,9 @@
+{
+  "name": "luxora-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Luxora chat API (real products, prices checked Nov 3, 2026). Dependency-free Node server for Render.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
