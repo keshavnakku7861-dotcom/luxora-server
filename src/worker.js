@@ -4,6 +4,7 @@
 import sender from '../responders/sender.js';
 import catalogMod from '../products.js';
 import deals from '../deals.json';
+const LANGS = ['en-US', 'en-GB', 'fr-FR', 'es-ES', 'de-DE', 'hi-IN'];   // allowed chat languages (default en-US)
 
 const catalog = catalogMod.products;
 const BASE_ORIGIN = 'https://keshavnakku7861-dotcom.github.io';
@@ -38,7 +39,7 @@ export default {
       const message = body && typeof body.message === 'string' ? body.message.trim() : '';
       if (!message) return json(400, { error: '"message" is required' }, cors);
       try {
-        const out = await sender.respond(message.slice(0, 1000), { history: Array.isArray(body.history) ? body.history.slice(-10) : [], last: Array.isArray(body.last) ? body.last.filter(x => typeof x === 'string').slice(0, 6) : [] });
+        const out = await sender.respond(message.slice(0, 1000), { lang: LANGS.includes(body.lang) ? body.lang : 'en-US', history: Array.isArray(body.history) ? body.history.slice(-10) : [], last: Array.isArray(body.last) ? body.last.filter(x => typeof x === 'string').slice(0, 6) : [] });
         if (!out || typeof out.reply !== 'string') throw new Error('bad responder output');
         return json(200, { ...out, products: normalizeProducts(out.products) }, cors);
       } catch (e) { console.error('responder error:', e && e.message); return json(502, { error: 'responder failed' }, cors); }
