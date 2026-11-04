@@ -76,13 +76,47 @@ const products = [
     highlights: ['Noise cancelling', '35 h battery', 'Lightweight'],
     price: 89.99, listPrice: 179.99, tags: ['music', 'noise', 'work', 'travel', 'battery', 'commute'],
     sizes: ['One size'], colors: ['black'],
-    retailer: { name: 'Sony', url: 'https://electronics.sony.com/audio/headphones/headband/p/whch720n-b' }, alsoAt: [], checkedAt: CHECKED }
+    retailer: { name: 'Sony', url: 'https://electronics.sony.com/audio/headphones/headband/p/whch720n-b' }, alsoAt: [], checkedAt: CHECKED },
+  /* added Nov 4, 2026 (Keshav approved): each Amazon page opened live that day; title, price and availability confirmed */
+  { id: 'ipad-mini-a20', name: 'Apple iPad mini (A20 Pro)', store: 'Apple', category: 'tablets', kind: 'tablet', tone: 'dark',
+    aliases: ['apple ipad mini', 'ipad mini a20 pro', 'ipad mini', 'ipad'],
+    description: 'Apple iPad mini with the A20 Pro chip: 128GB, Wi-Fi, Midnight.',
+    highlights: ['A20 Pro chip', '128GB, Wi-Fi', 'Compact tablet'],
+    price: 699, tags: ['premium', 'work', 'travel', 'reading', 'iphone', 'everyday'],
+    sizes: ['One size'], colors: ['standard'], optionsNote: 'This listing is the 128GB Wi-Fi model in Midnight.',
+    preorder: { releases: '2026-11-06' },
+    retailer: { name: 'Amazon', url: 'https://www.amazon.com/dp/B0HPC1JLCQ' }, alsoAt: [], checkedAt: '2026-11-04' },
+  { id: 'kindle-16gb-2026', name: 'Amazon Kindle 16GB (2026)', store: 'Amazon', category: 'e-readers', kind: 'ereader', tone: 'dark',
+    aliases: ['amazon kindle', 'kindle 16gb', 'kindle'],
+    description: 'The newest basic Kindle: 6-inch glare-free display, 16GB, thinner and lighter. This listing shows lockscreen ads.',
+    highlights: ['6-inch display', '16GB', 'With lockscreen ads'],
+    price: 149.99, tags: ['reading', 'travel', 'everyday', 'battery'],
+    sizes: ['One size'], colors: ['standard'], optionsNote: 'This listing is the ad-supported 16GB model; the version without lockscreen ads costs more on Amazon.',
+    retailer: { name: 'Amazon', url: 'https://www.amazon.com/dp/B0FXJ8VZ39' }, alsoAt: [], checkedAt: '2026-11-04' },
+  { id: 'echo-dot-2026', name: 'Amazon Echo Dot (2026)', store: 'Amazon', category: 'smart-home', kind: 'speaker', tone: 'dark',
+    aliases: ['amazon echo dot', 'echo dot', 'echo'],
+    description: 'Compact Alexa smart speaker and smart home hub (Graphite), designed for Alexa+.',
+    highlights: ['Smart speaker', 'Smart home hub', 'Designed for Alexa+'],
+    price: 99.99, tags: ['music', 'home', 'everyday', 'alexa'],
+    sizes: ['One size'], colors: ['standard'], optionsNote: 'This listing is the Graphite colour.',
+    retailer: { name: 'Amazon', url: 'https://www.amazon.com/dp/B0FXN2JWST' }, alsoAt: [], checkedAt: '2026-11-04' },
+  { id: 'alexa-tablet-8', name: 'Amazon Alexa Tablet 8 (64GB)', store: 'Amazon', category: 'tablets', kind: 'tablet', tone: 'dark',
+    aliases: ['amazon alexa tablet 8', 'alexa tablet 8', 'alexa tablet', 'fire tablet'],
+    description: '8.7-inch Alexa tablet with 4GB RAM and 64GB storage (Graphite), with Google Play. This listing has no lockscreen ads.',
+    highlights: ['8.7-inch display', '4GB RAM, 64GB', 'Google Play'],
+    price: 219.99, tags: ['reading', 'travel', 'everyday', 'alexa', 'home'],
+    sizes: ['One size'], colors: ['standard'], optionsNote: 'This listing is the 64GB Graphite model without lockscreen ads.',
+    retailer: { name: 'Amazon', url: 'https://www.amazon.com/dp/B0H8ZN512S' }, alsoAt: [], checkedAt: '2026-11-04' }
 ];
 
 /* Amazon.com product pages (checked in a browser Nov 3, 2026) with Keshav's Amazon Associates tag. Every product has a direct /dp/ page. */
 const AMAZON_TAG = 'luxora004-20';
 const AMAZON_DISCLOSURE = 'As an Amazon Associate, Luxora earns from qualifying purchases.';
 const ASIN = {
+  'ipad-mini-a20': 'B0HPC1JLCQ',      // Apple iPad mini (A20 Pro) — Midnight, 128GB Wi-Fi ($699.00, pre-order, releases Nov 6, 2026)
+  'kindle-16gb-2026': 'B0FXJ8VZ39',   // Amazon Kindle 16GB (newest model), lockscreen ad-supported ($149.99, in stock)
+  'echo-dot-2026': 'B0FXN2JWST',      // Amazon Echo Dot (newest model), Graphite ($99.99, in stock)
+  'alexa-tablet-8': 'B0H8ZN512S',     // Amazon Alexa Tablet 8, 4GB RAM, 64GB, Graphite, without lockscreen ads ($219.99, in stock)
   'aura-ring-4': 'B0D9WT1S2T',     // Oura Ring 4 Smart Ring - Silver
   'nova-ring': 'B0D3JDPB11',       // SAMSUNG Galaxy Ring
   'ring-pro': 'B0GRJVBPH3',
@@ -105,7 +139,10 @@ const categories = {
   'smart-rings': { label: 'smart rings', words: ['ring', 'rings', 'oura', 'smart ring', 'galaxy ring'] },
   'smartwatches': { label: 'smartwatches', words: ['watch', 'watches', 'smartwatch', 'smartwatches', 'wearable', 'wearables', 'garmin', 'forerunner'] },
   'earbuds': { label: 'earbuds', words: ['earbud', 'earbuds', 'buds', 'airpods', 'earphones'] },
-  'headphones': { label: 'headphones', words: ['headphone', 'headphones', 'cans', 'over-ear', 'overear'] }
+  'headphones': { label: 'headphones', words: ['headphone', 'headphones', 'cans', 'over-ear', 'overear'] },
+  'tablets': { label: 'tablets', words: ['tablet', 'tablets', 'ipad', 'ipads', 'ipad mini', 'alexa tablet', 'fire tablet'] },
+  'e-readers': { label: 'e-readers', words: ['kindle', 'kindles', 'e-reader', 'e-readers', 'ereader', 'ereaders', 'e-book', 'ebook', 'ebooks', 'reader'] },
+  'smart-home': { label: 'smart home devices', words: ['echo', 'echo dot', 'smart speaker', 'smart speakers', 'speaker', 'speakers', 'smart home', 'alexa speaker', 'home assistant']}
 };
 
 module.exports = { products, categories, CHECKED, AMAZON_TAG, AMAZON_DISCLOSURE };

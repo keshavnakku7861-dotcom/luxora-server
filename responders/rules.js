@@ -2,6 +2,8 @@
 // Contract: async respond(message, ctx) -> { reply: string, products: Product[], title?: string, followUp?: string }
 const { products, categories } = require('../products');
 const CHECKED_TXT = 'price checked Nov 3, 2026';
+const ck = p => p && p.checkedAt && p.checkedAt !== '2026-11-03' ? 'price checked ' + new Date(p.checkedAt + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : CHECKED_TXT;
+const pre = p => p && p.preorder && Date.now() < Date.parse(p.preorder.releases + 'T00:00:00-06:00') ? ` It's a pre-order on Amazon; it releases ${new Date(p.preorder.releases + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}.` : '';
 
 const money = n => '$' + n.toFixed(2);
 
@@ -79,7 +81,7 @@ async function respond(message, ctx = {}) {
 
   if (cats.length === 0 && /\b(grocer(y|ies)|food|snacks?|fashion|clothes|clothing|something to wear|shoes|sneakers|dress(es)?|shirts?|jackets?)\b/.test(lower)) {
     const which = /\b(fashion|clothes|clothing|something to wear|shoes|sneakers|dress(es)?|shirts?|jackets?)\b/.test(lower) ? 'Fashion' : 'Groceries';
-    return { reply: `${which} isn't available on Luxora yet. I can help with electronics: smart rings, smartwatches, earbuds and headphones. Try “best smart ring under $500”.`, products: [] };
+    return { reply: `${which} isn't available on Luxora yet. I can help with electronics: smart rings, smartwatches, earbuds, headphones, tablets, e-readers and smart speakers. Try “best smart ring under $500”.`, products: [] };
   }
   if (/^(hi|hello|hey|yo|good (morning|afternoon|evening))\b/.test(lower) && cats.length === 0) {
     return { reply: "Hi! I'm Luxora, your AI shopping assistant. Tell me what you're shopping for, your budget, or a brand, and I'll recommend the best options. Try “best smart ring under $500”.", products: [] };
@@ -95,7 +97,7 @@ async function respond(message, ctx = {}) {
   if (fu) return fu;
   if (named.length === 1 && !comparing) {
     const p = named[0], also = (p.alsoAt || []).map(a => `${a.name}${a.price ? ' (' + money(a.price) + ')' : ''}`).join(', ');
-    return { title: 'Your pick', products: [p], followUp: 'Want me to save it, or compare it with another one?', reply: `${p.name} (${p.store}) is ${money(p.price)} at ${p.retailer.name}, ${CHECKED_TXT}. ${p.description || ''}${also ? ` Also at ${also}.` : ''} Use the Buy at button on the product to buy it from the retailer.`.replace(/\s+/g, ' ').trim() };
+    return { title: 'Your pick', products: [p], followUp: 'Want me to save it, or compare it with another one?', reply: `${p.name} (${p.store}) is ${money(p.price)} at ${p.retailer.name}, ${ck(p)}.${pre(p)} ${p.description || ''}${also ? ` Also at ${also}.` : ''} Use the Buy at button on the product to buy it from the retailer.`.replace(/\s+/g, ' ').trim() };
   }
   if (comparing && named.length === 1 && last.length) return sideBySide(named[0], last.find(p => p !== named[0]) || named[0]);
 
@@ -110,7 +112,7 @@ async function respond(message, ctx = {}) {
     if (within.length === 0) {
       const cheapest = [...pool].sort((a, b) => a.price - b.price)[0];
       if (!cheapest) return fallback();
-      return { reply: `I couldn't find anything under $${Number.isInteger(budget) ? budget : budget.toFixed(2)} in that category. The closest is ${cheapest.name} at ${money(cheapest.price)} (${CHECKED_TXT}).`, products: [cheapest], title: 'Closest match', followUp: 'Would you like me to look at a higher budget?' };
+      return { reply: `I couldn't find anything under $${Number.isInteger(budget) ? budget : budget.toFixed(2)} in that category. The closest is ${cheapest.name} at ${money(cheapest.price)} (${ck(cheapest)}).`, products: [cheapest], title: 'Closest match', followUp: 'Would you like me to look at a higher budget?' };
     }
     pool = within;
   }
@@ -124,7 +126,7 @@ async function respond(message, ctx = {}) {
   const budgetText = budget != null ? `your budget (under $${Number.isInteger(budget) ? budget : budget.toFixed(2)})` : 'your budget';
   return {
     title: `Top suggested ${label}`,
-    reply: `Based on ${budgetText} and ${needs} needs, I recommend ${top.name} (${money(top.price)} at ${top.retailer.name}, ${CHECKED_TXT}). ${pool.length > 1 ? 'Here are a few more worth a look.' : ''}`.replace(/\s+/g, ' ').trim(),
+    reply: `Based on ${budgetText} and ${needs} needs, I recommend ${top.name} (${money(top.price)} at ${top.retailer.name}, ${ck(top)}).${pre(top)} ${pool.length > 1 ? 'Here are a few more worth a look.' : ''}`.replace(/\s+/g, ' ').trim(),
     products: pool,
     followUp: 'Want me to compare any of these, or save one for later?'
   };
@@ -132,9 +134,9 @@ async function respond(message, ctx = {}) {
 
 function fallback() {
   return {
-    reply: "I can help with smart rings, smartwatches, earbuds and headphones. Try something like “best smart ring under $500”, “earbuds for my commute” or “compare Oura Ring 4 and Samsung Galaxy Ring”.",
+    reply: "I can help with smart rings, smartwatches, earbuds, headphones, tablets, e-readers and smart speakers. Try something like “best smart ring under $500”, “earbuds for my commute” or “compare Oura Ring 4 and Samsung Galaxy Ring”.",
     products: []
   };
 }
 
-module.exports = { respond, name: 'rules' };
+module.exports = { ck, pre, respond, name: 'rules' };
