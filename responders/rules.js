@@ -167,7 +167,7 @@ async function respond(message, ctx = {}) {
   pool = pool.sort((a, b) => score(b, words) - score(a, words)).slice(0, 3);
   const top = pool[0];
   const label = cats.length === 1 ? categories[cats[0]].label : 'picks';
-  const needs = words.includes('everyday') ? 'everyday' : (words.find(w => ['fitness', 'sleep', 'health', 'music', 'travel', 'work', 'running', 'commute', 'workout'].includes(w)) || 'everyday');
+  const needs = words.includes('everyday') ? 'everyday' : (words.find(w => ['fitness', 'sleep', 'health', 'music', 'travel', 'work', 'running', 'commute', 'workout'].includes(w) && !(w === 'work' && /\bworks?\s+(?:well\s+)?with\b/.test(lower))) || 'everyday');
   const budgetText = budget != null ? `your budget (under $${Number.isInteger(budget) ? budget : budget.toFixed(2)})` : 'your budget';
   return {
     title: `Top suggested ${label}`,

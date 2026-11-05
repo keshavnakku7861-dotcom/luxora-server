@@ -80,7 +80,7 @@ async function respond(message, ctx = {}) {
   const top = p[0];
   const extra = p.length > 1 ? ` ${p.slice(1).map(x => `${x.name} (${money(x.price)})`).join(' and ')} ${p.length > 2 ? 'are good options' : 'is a good option'} too.` : '';
   const budget = (lower.match(/(?:under|below|less than|max|up to)\s*\$?\s*(\d+)/) || lower.match(/\$\s*(\d+)/) || [])[1];
-  const need = (lower.match(/\b(running|workouts?|gym|fitness|sleep|travel|commute|work|music|reading|kids)\b/) || [])[1];
+  const need = (lower.replace(/\bworks?\s+(?:well\s+)?with\b/g, 'compatible with').match(/\b(running|workouts?|gym|fitness|sleep|travel|commute|work|music|reading|kids)\b/) || [])[1];
   const opener = need ? `For ${need}, ` : budget ? `Under $${budget}, ` : '';
   const why = (top.highlights || [])[0];
   return {
